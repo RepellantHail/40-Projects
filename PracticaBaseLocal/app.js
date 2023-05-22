@@ -6,6 +6,20 @@ const alumno = [{
     carrera: 'Desarrollo De Software'
 }]
 
+alumno.push({
+  registro: 20310069,
+    nombre: 'Maria Sanchez',
+    email: 'a20310069@ceti.mx',
+    grupo: '4M',
+    carrera: 'Ingenieria Civil'
+},{
+  registro: 20310070,
+    nombre: 'Carlos Hernandez',
+    email: 'a20310070@ceti.mx',
+    grupo: '6M',
+    carrera: 'Industrial'
+})
+
 localStorage.setItem('alumno',JSON.stringify(alumno))
 
 
