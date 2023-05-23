@@ -1,43 +1,52 @@
-const alumno = [{
-    registro: 20310068,
-    nombre: 'Luis Modesto',
-    email: 'a20310068@ceti.mx',
-    grupo: '5M',
-    carrera: 'Desarrollo De Software'
-}]
-
-alumno.push({
-  registro: 20310069,
-    nombre: 'Maria Sanchez',
-    email: 'a20310069@ceti.mx',
-    grupo: '4M',
-    carrera: 'Ingenieria Civil'
-},{
-  registro: 20310070,
-    nombre: 'Carlos Hernandez',
-    email: 'a20310070@ceti.mx',
-    grupo: '6M',
-    carrera: 'Industrial'
-})
-
-localStorage.setItem('alumno',JSON.stringify(alumno))
+var tablaAlumno = localStorage.getItem("alumno")
+tablaAlumno = JSON.parse(tablaAlumno)
+if(tablaAlumno == null){
+  var tablaAlumno = []
+}
 
 
-// Retrieve data from local storage
-var data = JSON.parse(localStorage.getItem('alumno')) || [];
+function abrirForm(idForm){
+   //localStorage.setItem("alumno",JSON.stringify(idForm))
+   window.location.replace("alumnos-form.html")
+}
 
-// Generate table rows dynamically
-var rows = '';
-data.forEach(function(item) {
-  rows += '<tr>';
-  rows += '<td>' + item.registro + '</td>';
-  rows += '<td>' + item.nombre + '</td>';
-  rows += '<td>' + item.email + '</td>';
-  rows += '<td>' + item.grupo + '</td>';
-  rows += '<td>' + item.carrera + '</td>';
-  rows += '</tr>';
-});
+function guardar(){
+    var objAlumno = JSON.stringify({
+      registro: 20310067,
+      nombre: document.getElementById("txtNombreAlumno").value,
+      email: document.getElementById("txtEmailAlumno").value,
+      grupo: document.getElementById("txtGrupoAlumno").value,
+      carrera: document.getElementById("carrerasAlumno").value
+  })
+  console.log(objAlumno)
+  tablaAlumno.push(objAlumno)
+  localStorage.setItem('alumno',JSON.stringify(tablaAlumno))
+ // window.location.replace("index.html")
+}
 
-// Add generated rows to the table body
-var dataRows = document.getElementById('dataRows');
-dataRows.innerHTML = rows;
+function llenarTabla(){
+  // Retrieve data from local storage
+  // Generate table rows dynamically
+  var rows = '';
+  tablaAlumno.forEach(function(alumno) {
+    var alumno = JSON.parse(alumno)
+    rows += '<tr>';
+    rows += '<td>' + alumno.registro + '</td>';
+    rows += '<td>' + alumno.nombre + '</td>';
+    rows += '<td>' + alumno.email + '</td>';
+    rows += '<td>' + alumno.grupo + '</td>';
+    rows += '<td>' + alumno.carrera + '</td>';
+    rows += '<td>'+ 
+    "<div class='btn-group btn-group-sm w-auto h-25' role='group' aria-label='Basic example'>"+
+    "<button type='button' class='btn btn-warning fw-bold m-1 col-sm-6' onclick='abrirForm("+alumno.registro+")'><i class='fa-solid fa-pencil'></i> Editar</button>"+
+    "<button type='button' class='btn btn-danger fw-bold m-1 col-sm-6' onclick='abrirForm("+alumno.registro+")'><i class='fa-solid fa-trash-can'></i> Eliminar</button>"+
+    "</div>"
+      +'</td>';
+    rows += '</tr>';
+  });
+
+  // Add generated rows to the table body
+  var dataRows = document.getElementById('dataRows');
+  dataRows.innerHTML = rows;
+}
+
