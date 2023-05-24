@@ -1,27 +1,35 @@
-var tablaAlumno = localStorage.getItem("alumno")
-tablaAlumno = JSON.parse(tablaAlumno)
-if(tablaAlumno == null){
-  var tablaAlumno = []
-}
+var tablaAlumno = JSON.parse(localStorage.getItem('alumno')) || [];
+
+var registro = JSON.parse(localStorage.getItem('registro')) || []
+
+cargarPagina(registro)
 
 
-function abrirForm(idForm){
-   //localStorage.setItem("alumno",JSON.stringify(idForm))
-   window.location.replace("alumnos-form.html")
+function abrirForm(_registro){  
+  localStorage.setItem('registro',JSON.stringify(_registro))
+  window.location.assign("alumnos-form.html")
 }
 
 function guardar(){
     var objAlumno = JSON.stringify({
-      registro: 20310067,
+      registro: document.getElementById("txtIdAlumno").value,
       nombre: document.getElementById("txtNombreAlumno").value,
       email: document.getElementById("txtEmailAlumno").value,
       grupo: document.getElementById("txtGrupoAlumno").value,
       carrera: document.getElementById("carrerasAlumno").value
   })
-  console.log(objAlumno)
-  tablaAlumno.push(objAlumno)
+  if(registro == 0){
+    tablaAlumno.push(objAlumno)
+  } else{
+    for(const i in tablaAlumno){
+      var alumno = JSON.parse(tablaAlumno[i])
+      if(alumno.registro == registro){
+        tablaAlumno[i] = objAlumno
+      }
+    }
+  }
   localStorage.setItem('alumno',JSON.stringify(tablaAlumno))
- // window.location.replace("index.html")
+  window.location.replace("index.html")
 }
 
 function llenarTabla(){
@@ -37,9 +45,9 @@ function llenarTabla(){
     rows += '<td>' + alumno.grupo + '</td>';
     rows += '<td>' + alumno.carrera + '</td>';
     rows += '<td>'+ 
-    "<div class='btn-group btn-group-sm w-auto h-25' role='group' aria-label='Basic example'>"+
-    "<button type='button' class='btn btn-warning fw-bold m-1 col-sm-6' onclick='abrirForm("+alumno.registro+")'><i class='fa-solid fa-pencil'></i> Editar</button>"+
-    "<button type='button' class='btn btn-danger fw-bold m-1 col-sm-6' onclick='abrirForm("+alumno.registro+")'><i class='fa-solid fa-trash-can'></i> Eliminar</button>"+
+    "<div class='btn-group btn-group-sm w-auto h-50' role='group' aria-label='Basic example'>"+
+    "<button type='button' class='btn btn-warning fw-bold m-1' onclick='abrirForm("+alumno.registro+")'><i class='fa-solid fa-pencil'></i> Editar</button>"+
+    "<button type='button' class='btn btn-danger fw-bold m-1 ' onclick='eliminarAlumno("+alumno.registro+")'><i class='fa-solid fa-trash-can'></i> Eliminar</button>"+
     "</div>"
       +'</td>';
     rows += '</tr>';
@@ -50,3 +58,28 @@ function llenarTabla(){
   dataRows.innerHTML = rows;
 }
 
+function cargarPagina(_registro){
+ if(_registro > 0){
+  tablaAlumno.forEach(function (alumno)  {
+    var alumno = JSON.parse(alumno)
+    if(alumno.registro == _registro){
+      document.getElementById("txtIdAlumno").value = alumno.registro
+      document.getElementById("txtNombreAlumno").value = alumno.nombre
+      document.getElementById("txtEmailAlumno").value = alumno.email
+      document.getElementById("txtGrupoAlumno").value = alumno.grupo
+      document.getElementById("carrerasAlumno").value = alumno.carrera
+    }
+  } )
+ }
+}
+
+function eliminarAlumno(_registro){
+  localStorage.setItem('registro',JSON.stringify(_registro))
+  for(const i in tablaAlumno){
+    var alumno = JSON.parse(tablaAlumno[i])
+    if(alumno.registro == _registro){
+      tablaAlumno.splice(i,1)
+      localStorage.setItem('alumno',JSON.stringify(tablaAlumno))
+    }
+  }
+}
