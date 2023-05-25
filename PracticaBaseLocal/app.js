@@ -1,9 +1,7 @@
 var tablaAlumno = JSON.parse(localStorage.getItem('alumno')) || [];
-
 var registro = JSON.parse(localStorage.getItem('registro')) || []
 
 cargarPagina(registro)
-
 
 function abrirForm(_registro){  
   localStorage.setItem('registro',JSON.stringify(_registro))
@@ -11,25 +9,35 @@ function abrirForm(_registro){
 }
 
 function guardar(){
+  let validate = document.forms["formAlumno"]["txtIdAlumno"].value
+  if(validate == ""){
+    alert("Campo requerido. Ingrese Registro");
+    return false
+  }
+  else{
     var objAlumno = JSON.stringify({
       registro: document.getElementById("txtIdAlumno").value,
       nombre: document.getElementById("txtNombreAlumno").value,
       email: document.getElementById("txtEmailAlumno").value,
       grupo: document.getElementById("txtGrupoAlumno").value,
       carrera: document.getElementById("carrerasAlumno").value
-  })
-  if(registro == 0){
-    tablaAlumno.push(objAlumno)
-  } else{
-    for(const i in tablaAlumno){
-      var alumno = JSON.parse(tablaAlumno[i])
-      if(alumno.registro == registro){
-        tablaAlumno[i] = objAlumno
+    })
+    if(registro == 0){
+      tablaAlumno.push(objAlumno)
+    } else{
+      for(const i in tablaAlumno){
+        var alumno = JSON.parse(tablaAlumno[i])
+        if(alumno.registro == registro){
+          tablaAlumno[i] = objAlumno
+        }
       }
     }
+    localStorage.setItem('alumno',JSON.stringify(tablaAlumno))
+    window.location.replace("index.html")
   }
-  localStorage.setItem('alumno',JSON.stringify(tablaAlumno))
-  window.location.replace("index.html")
+
+
+    
 }
 
 function llenarTabla(){
