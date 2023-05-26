@@ -14,7 +14,9 @@
             <h1 id="tituloForm" class="text-center fs-1 m-3">Agregar Alumno</h1>
         </div>
         <div class="row card m-1 col-auto">
+            <!-- Form para ingresar datos con validacion de campos vacios al presionar el boton de guardar se validan los datos y se guardar en la base-->
             <form id="formAlumno" class="row justify-content-center m-3" onsubmit="guardar()">
+                <!-- Cada div consiste basicamente de lo mismo. Un label y su input, cada uno registro un dato que despues sera almacenado en un objeto -->
                 <div class="col-auto mb-1">
                     <label for="txtIdAlumno" class="form-label  mx-auto text-center">Registro Alumno
                         <input type="number" class="form-control" id="txtIdAlumno" placeholder="20300089"   required>
@@ -46,6 +48,7 @@
                         </select>
                     </label>                        
                 </div>
+                <!-- Grupo de botones. Boton Guardar para guardar datos en la BD y un boton para regresar a la pagina principal -->
                 <div class="row justify-content-center">
                     <button type="submit" class="col-4 btn btn-primary m-1" type="submit">Guardar</button>
                     <button class="btn btn-danger col-4 m-1" onclick="regresarMain()">Regresar a Main</button>
