@@ -10,14 +10,14 @@
 </head>
 <body>
     <div class="container-fluid">
-        <div class="row">
+        <div class="row col-auto">
             <h1 id="tituloForm" class="text-center fs-1 m-3">Agregar Alumno</h1>
         </div>
-        <div class="row card m-1">
-            <form id="formAlumno" class="row justify-content-center" novalidate onsubmit="guardar()">
+        <div class="row card m-1 col-auto">
+            <form id="formAlumno" class="row justify-content-center m-3" onsubmit="guardar()">
                 <div class="col-auto mb-1">
                     <label for="txtIdAlumno" class="form-label  mx-auto text-center">Registro Alumno
-                        <input type="text" class="form-control" id="txtIdAlumno" placeholder="20300089"   required>
+                        <input type="number" class="form-control" id="txtIdAlumno" placeholder="20300089"   required>
                     </label>                        
                 </div>
                 <div class="input-group mb-1">
@@ -48,7 +48,7 @@
                 </div>
                 <div class="row justify-content-center">
                     <button type="submit" class="col-4 btn btn-primary m-1" type="submit">Guardar</button>
-                    <a href="index.html" class="col-4 btn btn-danger m-1">Cancelar</a>
+                    <button class="btn btn-danger col-4 m-1" onclick="regresarMain()">Regresar a Main</button>
                 </div>
             </form>
         </div>

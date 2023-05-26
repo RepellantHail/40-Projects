@@ -1,20 +1,17 @@
 var tablaAlumno = JSON.parse(localStorage.getItem('alumno')) || [];
-var registro = JSON.parse(localStorage.getItem('registro')) || []
+var registro = JSON.parse(localStorage.getItem('registro')) || 0
+
 
 cargarPagina(registro)
 
 function abrirForm(_registro){  
   localStorage.setItem('registro',JSON.stringify(_registro))
+  registro = JSON.parse(localStorage.getItem('registro')) || 0
   window.location.assign("alumnos-form.html")
 }
 
 function guardar(){
-  let validate = document.forms["formAlumno"]["txtIdAlumno"].value
-  if(validate == ""){
-    alert("Campo requerido. Ingrese Registro");
-    return false
-  }
-  else{
+  if(validarForm()){
     var objAlumno = JSON.stringify({
       registro: document.getElementById("txtIdAlumno").value,
       nombre: document.getElementById("txtNombreAlumno").value,
@@ -22,22 +19,18 @@ function guardar(){
       grupo: document.getElementById("txtGrupoAlumno").value,
       carrera: document.getElementById("carrerasAlumno").value
     })
-    if(registro == 0){
+    if(registro == 0)
       tablaAlumno.push(objAlumno)
-    } else{
+    else{
       for(const i in tablaAlumno){
         var alumno = JSON.parse(tablaAlumno[i])
-        if(alumno.registro == registro){
+        if(alumno.registro == registro)
           tablaAlumno[i] = objAlumno
-        }
       }
     }
-    localStorage.setItem('alumno',JSON.stringify(tablaAlumno))
-    window.location.replace("index.html")
+    localStorage.setItem('alumno', JSON.stringify (tablaAlumno))
+    localStorage.setItem('registro',JSON.stringify(0))
   }
-
-
-    
 }
 
 function llenarTabla(){
@@ -90,4 +83,35 @@ function eliminarAlumno(_registro){
       localStorage.setItem('alumno',JSON.stringify(tablaAlumno))
     }
   }
+}
+
+function validarForm(){
+  let validate = document.forms["formAlumno"]["txtIdAlumno"].value
+  if(validate.trim() == ""){
+    console.log("Campo vacio")
+    alert("Campo requerido. Ingrese Registro");
+    return false
+  }
+  else{
+    return true
+  } 
+}
+
+function regresarMain(){
+  window.location.replace("index.html")
+}
+
+function buscarRegistro(){
+  var encontrado = false
+  var _registro = document.getElementById("numberSearch").value
+  if(tablaAlumno == [] || _registro == ""){
+    alert("Campo Vacio")
+  }
+  else{ 
+    tablaAlumno.forEach((alumno)=>{
+    alumno = JSON.parse(alumno)
+    if(alumno.registro == _registro)
+      encontrado = true
+  })}
+  (encontrado)? alert("Alumno Encontrado"): alert("Alumno no existe")
 }
