@@ -12,8 +12,8 @@ function abrirForm(_registro){  //Funcion que se hace llamar cuando se abre el f
 
 function guardar(){
   var bool = false//var para validar su un registro ya existe
-  if(validarForm()){
-    var objAlumno = JSON.stringify({
+  if(validarForm()){//Si el campo registro no está vacio se prosigue
+    var objAlumno = JSON.stringify({//Objeto alumno que toma valores del form
       registro: document.getElementById("txtIdAlumno").value,
       nombre: document.getElementById("txtNombreAlumno").value,
       email: document.getElementById("txtEmailAlumno").value,
@@ -21,28 +21,28 @@ function guardar(){
       carrera: document.getElementById("carrerasAlumno").value
     })
 
-    if(registro == 0){
+    if(registro == 0){//Se checa si se esta agregando un dato o si se edita
       //Se checa si el alumno ya existe
       tablaAlumno.forEach((alumno)=>{
         alumno = JSON.parse(alumno)
         if(alumno.registro == document.getElementById("txtIdAlumno").value)//Si se encuentra el valor en la tabla 
          bool = true
         })
-        if(bool){
+        if(bool){//Si el registro ya existe se muestra un mensaje y se recarga la pagina
           alert("Valor ya existe")
           cargarPagina()
-        }else{
+        }else{//Si no existe se agrega a la tabla
           tablaAlumno.push(objAlumno)
         }
     }
-    else{
-      for(const i in tablaAlumno){
+    else{//Si se esta editando
+      for(const i in tablaAlumno){//Se busca el registro en la tabla y se agregan los datos modificados a la tabla
         var alumno = JSON.parse(tablaAlumno[i])
         if(alumno.registro == registro)
           tablaAlumno[i] = objAlumno
       }
     }
-    localStorage.setItem('alumno', JSON.stringify (tablaAlumno))
+    localStorage.setItem('alumno', JSON.stringify (tablaAlumno))//Se registra la tabla a la base y la variable  de control
     localStorage.setItem('registro',JSON.stringify(0))
   }
 }
