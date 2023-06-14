@@ -1,6 +1,7 @@
 *{
   font-family: 'VT323';
 }
+
 body {    
     font-family: Vt232, Arial, Helvetica, sans-serif;
   }
@@ -22,6 +23,7 @@ body {
   
   .pokemon-block,
   .pokemon-block-back {
+    max-width: 18rem;
     border-radius: 10px;
     padding: 10px;
     background-color: white;
@@ -68,10 +70,12 @@ body {
   
   .flip-card:hover .card-container {
     transform: rotateY(180deg);
+    backface-visibility: hidden;
   }
   
   .pokemon-block,
   .pokemon-block-back {
+    max-width: 18rem;
     width: 100%;
     height: 100%;
     backface-visibility: hidden;
@@ -79,8 +83,10 @@ body {
   
   .pokemon-block-back {
     transform: rotateY(180deg);
-    position: absolute;
-    top: 0%;
+    max-width: 18rem;
+    position: fixed;
+    bottom: 0;
+    right: 0;
   }
   
   .stat-container {
@@ -88,3 +94,4 @@ body {
     grid-template-columns: 1fr 2fr;
     text-align: left;
   }
+
