@@ -1,5 +1,5 @@
 const pacientes = []
-const doctorContainer = document.querySelector(".elements-container")
+const doctorContainer = document.getElementById("elements-container")
 const collectionName = "pacientes"
 
 // Import the functions you need from the SDKs you need
@@ -26,8 +26,17 @@ const db = getFirestore(app);
 const getData = async () => {
     const querySnapshot = await getDocs(collection(db, collectionName));
     querySnapshot.forEach((paciente) => {
-    pacientes.push(paciente.data())
-    //console.log(doctor.id, " => ", doctor.data());
+        pacientes.push(paciente)
+        const nestedCollectionRef = collection(paciente.ref, "estudios");
+        getDocs(nestedCollectionRef).then((nestedSnapshot) => {
+        nestedSnapshot.forEach((nestedDocument) => {
+            // Access fields of the nested document
+            const nestedData = nestedDocument.data();
+            //console.log("Nested Document ID:", nestedDocument.id);
+            //console.log("Nested Field Value:", nestedData.descripcion);
+        });
+        });
+    
     });
     // Call the function to handle the retrieved data
     handleDataPacients();
@@ -41,38 +50,38 @@ getData().catch((error) => {
 
 const handleDataPacients = () => {
     pacientes.forEach((pas) => {
-    console.log("Cedula: ", pas.cedula);
-    console.log("Nombre: ", pas.nombre);
-    console.log("Especialidad: ", pas.especialidad);
-    crearPaciente(pas)
+    let estudiosID = pas.id
+    console.log(estudiosID)
+    pas = pas.data()
+    console.log(pas.nombre)
+    console.log(pas.edad)
+    crearPaciente(pas,estudiosID)
     // You can access other properties of the doc object here
   });
 };
 
-function crearPaciente(pas){
-    const row = document.createElement('div')
-    row.classList.add('row')
+function crearPaciente(pas,estudiosID){
+    
     
     const divContainer = document.createElement('div')
-    divContainer.classList.add('col-sm-6')
+    divContainer.classList.add('col')
 
     const cardContainer = document.createElement('div')
     cardContainer.classList.add('card-container')
 
-    const card = document.createElement('div')
+  const card = document.createElement('div')
     card.classList.add("card")
-    card.classList.add("text-bg-primary")
+    card.classList.add("text-bg-secondary")
     card.style.maxWidth = "18rem"
 
     const cardBody = document.createElement('div')
     cardBody.classList.add('card-body')
-    cardBody.classList.add('text-bg-primary')
     cardBody.classList.add('mb-3')
 
     const cardTitle = document.createElement('h5')
     cardTitle.classList.add('card-header')
     cardTitle.classList.add('fs-3')
-    cardTitle.textContent = pas.nombre
+    cardTitle.textContent = pas.nombre.toString().toUpperCase()
 
     const cardList = document.createElement('ul')
     cardList.classList.add('list-group')
@@ -80,6 +89,7 @@ function crearPaciente(pas){
 
     const cardListElement = document.createElement('li')
     cardListElement.classList.add('list-group-item')
+    cardListElement.classList.add('text-bg-secondary')
     cardListElement.style.margin = "0px"
     cardListElement.style.padding = "0px"
 
@@ -88,14 +98,44 @@ function crearPaciente(pas){
     peso.style.padding = "0px"
     peso.classList.add('card-text')
     peso.classList.add('fs-4')
-    peso.textContent = `Peso: ${pas.peso}kg`
+    peso.innerHTML = `<i class="fa-solid fa-weight-scale"></i> Peso: ${pas.peso}kg`
 
     const edad = document.createElement('p')
     edad.style.margin = "0px"
     edad.style.padding = "0px"
     edad.classList.add('card-text')
     edad.classList.add('fs-4')
-    edad.textContent = `Edad: ${pas.edad} años`
+    edad.innerHTML = `<i class="fa-solid fa-user-injured"></i> Edad: ${pas.edad} años`
+
+    const btnGroup = document.createElement('div')
+    btnGroup.classList.add('btn-group')
+    btnGroup.classList.add('p-1')
+    btnGroup.setAttribute('role','button')
+
+    const btnActualizar = document.createElement('button')
+    btnActualizar.classList.add('btn')
+    btnActualizar.classList.add('btn-warning')
+    btnActualizar.setAttribute('type','submit')
+    btnActualizar.innerHTML = '<i class="fa-solid fa-pen-to-square"></i>'
+
+    const btnEliminar = document.createElement('button')
+    btnEliminar.classList.add('btn')
+    btnEliminar.classList.add('btn-danger')
+    btnEliminar.setAttribute('type','submit')
+    btnEliminar.innerHTML = '<i class="fa-solid fa-trash"></i>'
+
+
+    const button = document.createElement("button");
+    button.textContent = "Estudios";
+    button.classList.add("btn");
+    button.classList.add("btn-dark");
+    button.addEventListener("click", () => {
+        // Call function to retrieve and display data from the second collection
+        retrieveSecondCollectionData(estudiosID);
+    });
+
+    btnGroup.appendChild(btnActualizar)
+    btnGroup.appendChild(btnEliminar)
 
     cardListElement.appendChild(peso)
     cardListElement.appendChild(edad)
@@ -105,14 +145,46 @@ function crearPaciente(pas){
 
     card.appendChild(cardTitle)
     card.appendChild(cardBody)
+    card.appendChild(btnGroup)
+    card.appendChild(button);
 
     cardContainer.appendChild(card)
-    row.appendChild(cardContainer)
-    doctorContainer.appendChild(row)
+    //row.appendChild(cardContainer)
+    doctorContainer.appendChild(cardContainer)
 }
 
-fetch("navBar.html").then(response => response.text()).then(data => {
-        document.getElementById("navbar-placeholder").innerHTML = data;
-    }).catch(error => {
-        console.error("Error fetching navbar:", error);
+const retrieveSecondCollectionData = async (pacienteId) => {
+    const querySnapshot = await getDocs(
+      collection(db, "pacientes", pacienteId, "estudios")
+    );
+    let nestedInfoHTML = "";
+    querySnapshot.forEach((document) => {
+      const data = document.data();
+      //console.log("ID consulta:", document.id);
+      //console.log("Diagnostico:", data.diagnostico);
+
+      nestedInfoHTML += `<p>Estudio ID: ${document.id}</p>><p> Descripción ${data.descripcion}</p><p> Fecha: ${data.fecha}</p>><p> Estudio: ${data.nombre}</p>`;
+    });
+
+    // Set the nested collection information in the modal dialog
+    const nestedInfoElement = document.getElementById("nestedInfo");
+    nestedInfoElement.innerHTML = nestedInfoHTML;
+  
+    // Show the modal dialog
+    const modal = document.getElementById("myModal");
+    modal.style.display = "block";
+};
+const closeBtn = document.getElementsByClassName("close")[0];
+closeBtn.addEventListener("click", function () {
+    const modal = document.getElementById("myModal");
+    modal.style.display = "none";
+});
+
+fetch("navBar.html")
+    .then(response => response.text())
+    .then(data => {
+    document.getElementById("navbar-placeholder").innerHTML = data;
+    })
+    .catch(error => {
+    console.error("Error fetching navbar:", error);
     });
