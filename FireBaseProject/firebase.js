@@ -1,6 +1,6 @@
 const doctores = []
 const consultas = []
-const doctorContainer = document.querySelector(".elements-container")
+const doctorContainer = document.getElementById("elements-container")
 const collectionName = "doctores"
 
 // Import the functions you need from the SDKs you need
@@ -66,11 +66,6 @@ const handleDataDocs = () => {
 };
 
 function crearDoctor(doctor,consultaID){
-    const row = document.createElement('div')
-    row.classList.add('row')
-    row.classList.add('row-cols-1')
-    row.classList.add('row-cols-md-3')
-    row.classList.add('g-4')
     
     const divContainer = document.createElement('div')
     divContainer.classList.add('col')
@@ -116,6 +111,23 @@ function crearDoctor(doctor,consultaID){
     especialidad.classList.add('fs-4')
     especialidad.textContent = `Especialidad: ${doctor.especialidad}`
 
+    const btnGroup = document.createElement('div')
+    btnGroup.classList.add('btn-group')
+    btnGroup.classList.add('p-1')
+    btnGroup.setAttribute('role','button')
+
+    const btnActualizar = document.createElement('button')
+    btnActualizar.classList.add('btn')
+    btnActualizar.classList.add('btn-warning')
+    btnActualizar.setAttribute('type','submit')
+    btnActualizar.innerHTML = '<i class="fa-solid fa-pen-to-square"></i>'
+
+    const btnEliminar = document.createElement('button')
+    btnEliminar.classList.add('btn')
+    btnEliminar.classList.add('btn-danger')
+    btnEliminar.setAttribute('type','submit')
+    btnEliminar.innerHTML = '<i class="fa-solid fa-trash"></i>'
+
     const button = document.createElement("button");
     button.textContent = "Consultas";
     button.classList.add("btn");
@@ -125,6 +137,9 @@ function crearDoctor(doctor,consultaID){
         retrieveSecondCollectionData(consultaID);
     });
 
+    btnGroup.appendChild(btnActualizar)
+    btnGroup.appendChild(btnEliminar)
+
     cardListElement.appendChild(cedula)
     cardListElement.appendChild(especialidad)
 
@@ -133,11 +148,11 @@ function crearDoctor(doctor,consultaID){
 
     card.appendChild(cardTitle)
     card.appendChild(cardBody)
+    card.appendChild(btnGroup)
     card.appendChild(button);
 
     cardContainer.appendChild(card)
-    row.appendChild(cardContainer)
-    doctorContainer.appendChild(row)
+    doctorContainer.appendChild(cardContainer)
 }
 
 const retrieveSecondCollectionData = async (doctorId) => {
